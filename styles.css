@@ -1,0 +1,176 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    height: 100%;
+/*             overflow: auto; */
+    touch-action: manipulation;  /* Prevent the zoom and pinch gestures */
+
+}
+
+/* Prevent text selection */
+* {
+  -webkit-touch-callout: none; /* Disable the default callout menu on long press */
+  -webkit-user-select: none;   /* Prevent text selection on long press */
+  user-select: none;           /* Prevent text selection for other browsers */
+}
+
+
+body.panorama-active {
+    overflow: hidden;
+}
+#container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+#cardGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+}
+.card {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+.card:hover {
+    transform: scale(1.05);
+}
+.card img {
+    width: 100%;
+    height: 70%;
+    object-fit: cover;
+}
+.card h3 {
+    padding: 10px;
+    margin: 0;
+    text-align: center;
+    font-size: 0.9em;
+}
+#toggleSwitch {
+    margin-top: 20px;
+}
+@media (max-width: 480px) {
+    #cardGrid {
+        gap: 10px;
+        padding: 10px;
+    }
+    .card h3 {
+        font-size: 0.8em;
+    }
+}
+#panorama {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+}
+#crosshair {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border: 2px solid white;
+    border-radius: 50%;
+    display: none;
+}
+#checkButton, #saveButton, #closeButton, #addButton, #editButton, #deleteButton, #playButton,#learnButton, #wireframeButton {
+    position: absolute;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: none;
+}
+#checkButton {
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+#saveButton {
+    top: 60px;
+    right: 20px;
+}
+#closeButton {
+    top: 20px;
+    right: 20px;
+}
+#addButton {
+    bottom: 20px;
+    right: 20px;
+}
+#editButton, #deleteButton {
+    bottom: 60px;
+    right: 20px;
+}
+#playButton, #learnButton {
+    bottom: 60px;
+    left: 20px;
+}
+#learnButton {
+    background-color: #1c9aed;
+    bottom: 100px;
+}
+#deleteButton {
+    background-color: #f44336;
+    bottom: 100px;
+}
+#editOverlay {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    display: none;
+}
+#wordDisplay {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 24px;
+    color: white;
+    background-color: rgba(0,0,0,0.5);
+    padding: 10px 20px;
+    border-radius: 5px;
+    display: none;
+}
+#debug {
+    top: 10px;
+    left: 10px;
+    font-size: 14px;
+    position: absolute;
+    z-index: 2;
+    font-family: 'Arial', sans-serif;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+#wireframeButton {          
+    top: 30px;
+    left: 20px;
+}

@@ -1,0 +1,26 @@
+[
+    {
+      "title": "Bathroom",
+      "previewUrl": "./assets/pictures/bathroom.jpg",
+      "fullImageUrl": "./assets/pictures/bathroom.jpg",
+      "jsonUrl": ""
+    },
+    {
+      "title": "Kitchen",
+      "previewUrl": "./assets/pictures/kitchen.jpg",
+      "fullImageUrl": "./assets/pictures/kitchen.jpg",
+      "jsonUrl": "_assets_pictures_kitchen.json"
+    },
+    {
+      "title": "Library",
+      "previewUrl": "./assets/pictures/library.jpg",
+      "fullImageUrl": "./assets/pictures/library.jpg",
+      "jsonUrl": ""
+    },
+    {
+      "title": "Living Room",
+      "previewUrl": "./assets/pictures/living.jpg",
+      "fullImageUrl": "./assets/pictures/living.jpg",
+      "jsonUrl": ""
+    }
+]

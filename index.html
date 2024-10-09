@@ -1,0 +1,49 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Can You Find .... (in 360)</title>
+    <link rel="stylesheet" href="./styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- <script src="./scripts/webtts.js"></script>  -->
+  </head>
+  <body>
+    
+    <div id="container">
+        <div id="cardGrid"></div>
+        <div id="toggleSwitch">
+            <label>
+                <input type="checkbox" id="modeToggle">
+                <span id="modeLabel">Play Mode</span>
+            </label>
+        </div>
+    </div>
+    <div id="debug"></div>
+    <div id="panorama"></div>
+    <div id="crosshair"></div>
+    <button id="checkButton">Check</button>
+    <button id="saveButton">Save</button>
+    <button id="addButton">Add Hotspot</button>
+    <button id="editButton">Edit</button>
+    <button id="deleteButton">Delete</button>
+    <button id="playButton">Play</button>
+    <button id="learnButton">Learn</button>
+    <button id="closeButton">Close</button>
+    <button id="wireframeButton">Wireframe</button>
+    <div id="editOverlay">
+        <input type="text" id="hotspotName" placeholder="Hotspot Name">
+        <input type="range" id="hotspotRadius" min="10" max="200" value="20">
+        <button id="saveHotspot">Save Hotspot</button>
+        <button id="cancelHotspot">cancel</button>
+    </div>
+    <div id="wordDisplay"></div>
+
+  <script type="module" src="./scripts/main.js"></script>
+  
+</body>
+</html>
+
+
+            
