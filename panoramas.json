@@ -3,7 +3,7 @@
       "title": "Bathroom",
       "previewUrl": "./assets/pictures/bathroom.jpg",
       "fullImageUrl": "./assets/pictures/bathroom.jpg",
-      "jsonUrl": ""
+      "jsonUrl": "_assets_pictures_bathroom.json"
     },
     {
       "title": "Kitchen",
@@ -12,15 +12,9 @@
       "jsonUrl": "_assets_pictures_kitchen.json"
     },
     {
-      "title": "Library",
-      "previewUrl": "./assets/pictures/library.jpg",
-      "fullImageUrl": "./assets/pictures/library.jpg",
-      "jsonUrl": ""
-    },
-    {
-      "title": "Living Room",
-      "previewUrl": "./assets/pictures/living.jpg",
-      "fullImageUrl": "./assets/pictures/living.jpg",
+      "title": "Custom",
+      "previewUrl": "./assets/pictures/blank.jpg",
+      "fullImageUrl": "./assets/pictures/blank.jpg",
       "jsonUrl": ""
     }
 ]

@@ -10,6 +10,9 @@ class Panorama {
 }
 
 let scene, camera, renderer, sphere, crossh;
+
+const sphereRadius = 500;
+
 let isUserInteracting = false;
 let onPointerDownMouseX = 0, onPointerDownMouseY = 0;
 let lon = 0, onPointerDownLon = 0;
@@ -24,7 +27,17 @@ let wireframeMode = false;
 let crosshRadius = 12;
 let panoramas = [];
 
+let urlImage="";
+let urlJson="";
+
+
+let uploadedImage="";
+let uploadedJson="";
+
+
 let showHotspots=false;
+
+let hotspotsLoaded=false;
 
 let gyroEnabled = false;
 let gyroQuaternion = new THREE.Quaternion();
@@ -44,6 +57,13 @@ const saveButton = document.getElementById('saveButton');
 const closeButton = document.getElementById('closeButton');
 const addButton = document.getElementById('addButton');
 const wireframeToggle = document.getElementById('wireframeButton');
+const jsonLoaderButton = document.getElementById('jsonloaderSection');
+const imageLoaderButton = document.getElementById('imageloaderSection');
+const resetGyro = document.getElementById('resetGyro');
+
+const imageLoader = document.getElementById('imageLoader');
+const jsonLoader = document.getElementById('jsonLoader');
+
 const editButton = document.getElementById('editButton');
 
 const playButton = document.getElementById('playButton');
@@ -54,9 +74,86 @@ const editOverlay = document.getElementById('editOverlay');
 const wordDisplay = document.getElementById('wordDisplay');
 const debugElement = document.getElementById('debug');
 
+let image = null;
+
 const tts = initTTS();
 
 if(tts){tts.setLanguage("en-US");}
+
+imageLoader.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            console.log(event.target.result);
+            uploadedImage=event.target.result;
+            loadImageFromUrl(uploadedImage);
+            e.target.value = '';
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+jsonLoader.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            uploadedJson=event.target.result;
+            loadHotspots(uploadedJson);
+            e.target.value = '';
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+function readUrlParams() {
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.has('data')) {
+        urlJson = params.get('data');
+    }
+
+    if (params.has('image')) {
+        urlImage = params.get('image');
+    }
+
+    setEditMode(params.get('editmode') === 'true')
+
+    if(urlImage!=""){
+        const pan = new Panorama("From URL", urlImage, urlImage, urlJson);
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+            <img src="${pan.previewUrl}" alt="${pan.title}">
+            <h3>${pan.title}</h3>
+        `;
+        card.addEventListener('click', () => loadPanorama(pan));
+        cardGrid.appendChild(card);
+        console.log("DID THIS ");
+    }
+}
+
+function loadImageFromUrl(url) {
+  
+        unloadPanorama();
+
+        new THREE.TextureLoader().load(
+            url,
+            function(texture) {
+                sphere.material.map = texture;
+                sphere.material.needsUpdate = true;
+                panoramaStarted = true;
+                console.log('Panorama loaded successfully');
+                document.body.classList.add('panorama-active');
+            },
+            undefined,
+            function(err) {
+                console.error('Error loading panorama:', err);
+            }
+        );
+
+}
 
 
 function init() {
@@ -69,7 +166,7 @@ function init() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     panoramaContainer.appendChild(renderer.domElement);
 
-    const geometry = new THREE.SphereGeometry(500, 60, 40);
+    const geometry = new THREE.SphereGeometry(sphereRadius, 60, 40);
     geometry.scale(-1, 1, 1);
 
     const material = new THREE.MeshBasicMaterial();
@@ -98,10 +195,11 @@ function init() {
 
     if (window.DeviceOrientationEvent) {
         window.addEventListener('deviceorientation', onDeviceOrientation, false);
+        //show reset orientation button
+        resetGyro.style.display="flex";
     }
 
-     // Add touch event listeners
-     document.addEventListener('touchstart', onDocumentTouchStart, false);
+    document.addEventListener('touchstart', onDocumentTouchStart, false);
     document.addEventListener('touchmove', onDocumentTouchMove, false);
     document.addEventListener('touchend', onDocumentTouchEnd, false);
 
@@ -134,23 +232,23 @@ function createCards() {
     panoramas.forEach(panorama => {
         const card = document.createElement('div');
         card.className = 'card';
+        card.id = panorama.title==="Custom"?"CustomCard":"";
         card.innerHTML = `
-            <img src="${panorama.previewUrl}" alt="${panorama.title}">
+            <img src="${panorama.previewUrl}" id="${panorama.title==="Custom"?"CustomImage":""}" alt="${panorama.title}">
             <h3>${panorama.title}</h3>
         `;
         card.addEventListener('click', () => loadPanorama(panorama));
         cardGrid.appendChild(card);
     });
+
+    readUrlParams();
+
     console.log("cards created");
 }
 
 
-
-// Add this function to toggle wireframe mode
 function toggleWireframe() {
     wireframeMode = !wireframeMode;
-    // updateMaterials();
-    // renderHotspots();
 }
 
 function onWindowResize() {
@@ -259,25 +357,18 @@ function onDeviceOrientation(event) {
 
 
 function loadPanorama(panorama) {
-     unloadPanorama();
-    new THREE.TextureLoader().load(
-        panorama.fullImageUrl,
-        function(texture) {
-            sphere.material.map = texture;
-            sphere.material.needsUpdate = true;
-            panoramaStarted = true;
-            console.log('Panorama loaded successfully');
-            document.body.classList.add('panorama-active');
-        },
-        undefined,
-        function(err) {
-            console.error('Error loading panorama:', err);
-        }
-    );
 
+    if(panorama.title==="Custom")
+    {
+        imageLoaderButton.style.display="flex";
+    }
+
+    loadImageFromUrl(panorama.fullImageUrl)
     currentPanorama = panorama.fullImageUrl;
     loadHotspots(panorama.jsonUrl);
-    readMessage("Point at things and click the button : check.",true,true);
+    
+
+    jsonLoaderButton.style.display="flex";
 
     // Update UI
     cardGrid.style.display = 'none';
@@ -288,15 +379,21 @@ function loadPanorama(panorama) {
     saveButton.style.display = editMode ? 'block' : 'none';
     wireframeToggle.style.display = editMode ? 'block' : 'none';
     closeButton.style.display = 'block';
+
+    if(editMode){showHotspots=editMode;}
 }
+
+
 
 
 function unloadPanorama()
 {
+    // updateMaterials();
+
     // Dispose of the old texture if it exists
     if (sphere.material.map) {
-        sphere.material.map.dispose();  // Dispose of the texture to free up memory
-        sphere.material.map = null;     // Clear the reference
+        sphere.material.map.dispose();  
+        sphere.material.map = null;    
         console.log('Previous texture disposed');
     }
 }
@@ -315,16 +412,7 @@ function requestOrientationPermission() {
 
 function updateMaterials() {
     if (sphere) {
-        // if (wireframeMode) {
-        //     sphere.material = new THREE.MeshBasicMaterial({ 
-        //         wireframe: true, 
-        //         color: 0xffffff 
-        //     });
-        // } else {
-            // sphere.material = new THREE.MeshBasicMaterial({
-            //     map: sphere.material.map
-            // });
-        // }
+
         if (wireframeMode) {
             sphere.material.opacity=0.5;
         } else {
@@ -334,6 +422,7 @@ function updateMaterials() {
 }
 
 function loadHotspots(jsonPath) {
+    
     fetch(jsonPath)
         .then(response => {
             if (!response.ok) {
@@ -348,11 +437,15 @@ function loadHotspots(jsonPath) {
                 radius: hotspot.radius
             }));
             console.log('JSON loaded');
+            hotspotsLoaded=true;
+            readMessage(editMode?"Edit mode. Click a hotspot to edit the name or delete it. Save the data.":"Point at things and click the button : check.",true,true);
             updateHotspots();
         })
         .catch(error => {
             console.log('No hotspots found or error loading hotspots:', error);
-            hotspots = []; // Reset hotspots to an empty array
+            hotspots = []; // Reset
+            readMessage(editMode?"Edit mode. Create Hotspots. Save the data.":"No hotspots found.",true,true);
+            hotspotsLoaded=false;
             updateHotspots();
         });
 }
@@ -402,7 +495,6 @@ function editHotspot(index, tempCircle = null) {
 
 function setEdit()
 {
-    console.log("edit pressed");
     //check which hotspot
     for (let index = 0; index < hotspots.length; index++) {
         let hotspot = hotspots[index];
@@ -472,19 +564,14 @@ function addHotspot() {
 }
 
 function isLookingAtHotspot() {
-    // const raycaster = new THREE.Raycaster();
-    // raycaster.setFromCamera(new THREE.Vector2(0, 0), camera);
-    // const intersects = raycaster.intersectObjects(scene.children);
-    // return intersects.find(intersect => intersect.object.isHotspot);
 
     for (let index = 0; index < hotspots.length; index++) {
         let hotspot = hotspots[index];
 
         if (isInHotspot(hotspot)) {
             // on hotspot
-            
             return true;
-            break;  // Exit the loop when the hotspot is found
+            break;  
         } 
     }
     return false;
@@ -494,25 +581,25 @@ function isLookingAtHotspot() {
 
 function updateHotspots() {
 
-    // renderHotspots();//show visual circles
     if(showHotspots)
     {
-        renderHotspots();//show visual circles
+        renderHotspots();
     }
     else
     {
-        clearHotspots();//clear visual circles
+        clearHotspots();
     }
 
     if (editMode) {
 
-        showEditButtons();//show edit buttons
+        showEditButtons();
         hideGameButtons();
 
     } else {
       
-        hideEditButtons();//hide edit buttons
-        showGameButtons();
+        hideEditButtons();
+        if(hotspotsLoaded)
+        {showGameButtons();}else{hideGameButtons();}
     }
 }
 
@@ -520,9 +607,9 @@ function renderCrosshair() {
     
     //crossCreated in init()
     
-    // Position the crosshair on the surface of the sphere
+    // Position crosshair on the surface of the sphere
     const direction = new THREE.Vector3().copy(camera.target).normalize();
-    crossh.position.copy(direction.multiplyScalar(500));
+    crossh.position.copy(direction.multiplyScalar(sphereRadius));
     
     // Make the circle face the center of the sphere
     crossh.lookAt(new THREE.Vector3(0, 0, 0));
@@ -548,7 +635,6 @@ function renderHotspots() {
         const circle = new THREE.Mesh(geometry, material);
         
         // Position the circle on the surface of the sphere
-        const sphereRadius = 500; // This should match the radius of your panorama sphere
         const direction = new THREE.Vector3().copy(hotspot.position).normalize();
         circle.position.copy(direction.multiplyScalar(sphereRadius));
         
@@ -642,23 +728,22 @@ let gameStarted=false;
 let currentWordToFind="";
 let selectedWords = [];
 
+
 //TODO : instead of popping word, set index in an array, set time in another to keep track of time per word.
 // enable skip word and give up button
 //put timer on top.
 // set local storage time to word 
 
+//TODO: 
+//set TTS  Language also allow language setup in url param... 
 
-//TODO: edit mode in urlparam only
 
-//set TTS  Language in url param... 
-//set image URL in url parameter... shows extra card "my picture"
+//TODO : CLEAN UP !
 
-// set json url and / local storage button?
 
 
 function startPlay()
 {
-    //disable hotspot seen.
     showHotspots=false;
 
     let allwords  = [];
@@ -700,7 +785,7 @@ function getNextWord()
     {
         currentWordToFind=selectedWords.pop();
         readMessage("Can you find ... " + currentWordToFind,true,true);
-        //need to have it written too
+        //need to have it written too if no TTS
     }
     else
     {
@@ -723,7 +808,6 @@ function startLearn()
     readMessage("learning mode",true,true);
     showHotspots=true;
     renderHotspots();
-    //enable show hotspots !
 }
 
 // Add a function to reset the initial orientation
@@ -760,16 +844,16 @@ function update() {
             // Update camera.target based on the new orientation
             const direction = new THREE.Vector3(0, 0, -1);
             direction.applyQuaternion(finalQuaternion);
-            camera.target.copy(direction.multiplyScalar(500));
+            camera.target.copy(direction.multiplyScalar(sphereRadius));
         } else {
             // Existing mouse/touch based rotation code
             lat = Math.max(-85, Math.min(85, lat));
             phi = THREE.MathUtils.degToRad(90 - lat);
             theta = THREE.MathUtils.degToRad(lon);
 
-            camera.target.x = 500 * Math.sin(phi) * Math.cos(theta);
-            camera.target.y = 500 * Math.cos(phi);
-            camera.target.z = 500 * Math.sin(phi) * Math.sin(theta);
+            camera.target.x = sphereRadius * Math.sin(phi) * Math.cos(theta);
+            camera.target.y = sphereRadius * Math.cos(phi);
+            camera.target.z = sphereRadius * Math.sin(phi) * Math.sin(theta);
 
             camera.lookAt(camera.target);
         }
@@ -796,30 +880,16 @@ function update() {
 }
 
 
-// cardGrid.addEventListener('click', function(event) {
-//     const card = event.target.closest('.card');
-//     if (card) {
-//         const imagePath = card.dataset.image;
-//         unloadPanorama();
-//         loadPanorama(imagePath);
-//         // loadPanorama('shop.jpg');
-//         cardGrid.style.display = 'none';
-//         panoramaContainer.style.display = 'block';
-//         toggleSwitch.style.display = 'none';
-//         crosshair.style.display = 'block';
-//         checkButton.style.display = editMode ? 'none' : 'block';
-//         saveButton.style.display = editMode ? 'block' : 'none';
-//         wireframeToggle.style.display = editMode ? 'block' : 'none';
-//         closeButton.style.display = 'block';     
-//     }
-// });
-
 toggleSwitch.addEventListener('change', function() {
-    editMode = this.checked;
-    modeLabel.textContent = editMode ? 'Edit Mode' : 'Play Mode';
-    showHotspots=editMode;
+    setEditMode(this.checked);
 });
 
+function setEditMode(editstatus)
+{
+    editMode = editstatus;
+    modeLabel.textContent = editMode ? 'Edit Mode' : 'Play Mode';
+    showHotspots=editMode;
+}
 
 editButton.addEventListener('click', setEdit);
 
@@ -831,6 +901,8 @@ addButton.addEventListener('click', addHotspot);
 checkButton.addEventListener('click', CheckForHotSpot);
 wireframeToggle.addEventListener('click', toggleWireframe);
 
+resetGyro.addEventListener('click', resetInitialOrientation);
+
 closeButton.addEventListener('click', function() {
     panoramaStarted = false;
     
@@ -839,14 +911,37 @@ closeButton.addEventListener('click', function() {
     }
     hotspots = [];
 
+    //custom pano
+    if(uploadedImage!="")
+    {
+        for(let i=0; i<panoramas.length; i++)
+        {
+            if(panoramas[i].title==="Custom")
+            {
+                panoramas[i].fullImageUrl=uploadedImage;
+                panoramas[i].jsonUrl=uploadedJson;
+
+                const imageElement = document.getElementById('CustomImage');
+                imageElement.src = uploadedImage;
+
+                break;
+            }
+        }
+        uploadedImage="";
+        uploadedJson="";
+    }
+
     cardGrid.style.display = 'grid';
     panoramaContainer.style.display = 'none';
     toggleSwitch.style.display = 'block';
     crosshair.style.display = 'none';
     checkButton.style.display = 'none';
     saveButton.style.display = 'none';
-    wireframeToggle.style.display = 'none';
     editButton.style.display = 'none';
+
+    wireframeToggle.style.display = 'none';
+    jsonLoaderButton.style.display="none";
+    imageLoaderButton.style.display="none";
 
     learnButton.style.display = 'none';
     playButton.style.display = 'none';
@@ -859,6 +954,8 @@ closeButton.addEventListener('click', function() {
 
     stopPlay();
     showHotspots=false;
+
+    currentPanorama="";
 
     unloadPanorama();
 });
@@ -884,4 +981,6 @@ saveButton.addEventListener('click', function() {
 });
 
 init();
+
+
 
