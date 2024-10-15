@@ -26,6 +26,7 @@ let panoramaStarted = false;
 let wireframeMode = false;
 let crosshRadius = 12;
 let panoramas = [];
+let editable=false;
 
 let urlImage="";
 let urlJson="";
@@ -49,7 +50,8 @@ let hasInitialOrientation = false;
 
 const cardGrid = document.getElementById('cardGrid');
 const panoramaContainer = document.getElementById('panorama');
-const toggleSwitch = document.getElementById('modeToggle');
+const editToggle = document.getElementById('toggleSwitch');
+const toggle = document.getElementById('modeToggle');
 const modeLabel = document.getElementById('modeLabel');
 const crosshair = document.getElementById('crosshair');
 const checkButton = document.getElementById('checkButton');
@@ -63,6 +65,7 @@ const resetGyro = document.getElementById('resetGyro');
 
 const imageLoader = document.getElementById('imageLoader');
 const jsonLoader = document.getElementById('jsonLoader');
+const loadPanel = document.getElementById('loadpanel');
 
 const editButton = document.getElementById('editButton');
 
@@ -118,7 +121,21 @@ function readUrlParams() {
         urlImage = params.get('image');
     }
 
-    setEditMode(params.get('editmode') === 'true')
+    if (params.has('edit')) {
+        debugElement.style.display="flex";
+        editToggle.style.display="block";
+        editable=true;
+    }
+    else
+    {
+        debugElement.style.display="none";
+        editToggle.style.display="none";
+        editable=false;
+    }
+
+    
+
+    setEditMode(params.get('edit') === 'true')
 
     if(urlImage!=""){
         const pan = new Panorama("From URL", urlImage, urlImage, urlJson);
@@ -153,6 +170,10 @@ function loadImageFromUrl(url) {
             }
         );
 
+}
+
+function isMobileDevice() {
+    return /Mobi|Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/i.test(navigator.userAgent);
 }
 
 
@@ -195,8 +216,7 @@ function init() {
 
     if (window.DeviceOrientationEvent) {
         window.addEventListener('deviceorientation', onDeviceOrientation, false);
-        //show reset orientation button
-        resetGyro.style.display="flex";
+        
     }
 
     document.addEventListener('touchstart', onDocumentTouchStart, false);
@@ -207,6 +227,8 @@ function init() {
     if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
         if(tts){readMessage("gyro asked",true,true);}
         document.body.addEventListener('click', requestOrientationPermission, { once: true });
+        //show reset orientation button
+        resetGyro.style.display="flex";
     }else
     {
         if(tts){readMessage("speech ready",true,true);}
@@ -230,6 +252,7 @@ function loadPanoramas() {
 function createCards() {
     cardGrid.innerHTML = '';
     panoramas.forEach(panorama => {
+        if(isMobileDevice()&&panorama.title==="Custom"){return;}
         const card = document.createElement('div');
         card.className = 'card';
         card.id = panorama.title==="Custom"?"CustomCard":"";
@@ -373,7 +396,7 @@ function loadPanorama(panorama) {
     // Update UI
     cardGrid.style.display = 'none';
     panoramaContainer.style.display = 'block';
-    toggleSwitch.style.display = 'none';
+    editToggle.style.display = 'none';
     crosshair.style.display = 'block';
     checkButton.style.display = editMode ? 'none' : 'block';
     saveButton.style.display = editMode ? 'block' : 'none';
@@ -880,7 +903,7 @@ function update() {
 }
 
 
-toggleSwitch.addEventListener('change', function() {
+toggle.addEventListener('change', function() {
     setEditMode(this.checked);
 });
 
@@ -933,7 +956,7 @@ closeButton.addEventListener('click', function() {
 
     cardGrid.style.display = 'grid';
     panoramaContainer.style.display = 'none';
-    toggleSwitch.style.display = 'block';
+    editToggle.style.display = editable? 'block':'none';
     crosshair.style.display = 'none';
     checkButton.style.display = 'none';
     saveButton.style.display = 'none';
@@ -981,6 +1004,16 @@ saveButton.addEventListener('click', function() {
 });
 
 init();
+
+if(isMobileDevice())
+{
+    //disable on mobile
+    loadPanel.style.display="none";
+}
+else
+{
+    loadPanel.style.display="flex";
+}
 
 
 

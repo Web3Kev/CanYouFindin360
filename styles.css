@@ -16,6 +16,21 @@ body, html {
 }
 
 
+#title {
+    position: absolute;
+    top: 20px; 
+    left: 50%;
+    width:fit-content;
+    transform: translateX(-50%);
+    text-align: center;
+    font-size: 30px; 
+    color: teal; 
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); 
+    padding: 10px;
+    /* background-color: rgba(0, 0, 0, 0.3); */
+    border-radius: 5px; 
+}
+
 body.panorama-active {
     overflow: hidden;
 }
@@ -28,6 +43,7 @@ body.panorama-active {
     justify-content: flex-start;
     align-items: center;
     padding: 20px;
+    padding-top: 80px;
     box-sizing: border-box;
 }
 #cardGrid {
@@ -64,8 +80,14 @@ body.panorama-active {
     text-align: center;
     font-size: 0.9em;
 }
+
+.button{
+    font-size: 0.7em;
+}
+
 #toggleSwitch {
     margin-top: 20px;
+    /* display: none; */
 }
 @media (max-width: 480px) {
     #cardGrid {
@@ -75,6 +97,8 @@ body.panorama-active {
     .card h3 {
         font-size: 0.8em;
     }
+
+
 }
 #panorama {
     position: absolute;
@@ -109,26 +133,28 @@ body.panorama-active {
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
+    font-size: 20px;
+    font-weight: bolder;
 }
 #saveButton {
     top: 60px;
-    right: 20px;
+    right: 10px;
 }
 #closeButton {
-    top: 20px;
-    right: 20px;
+    top: 18px;
+    right: 10px;
 }
 #addButton {
     bottom: 20px;
-    right: 20px;
+    right: 10px;
 }
 #editButton, #deleteButton {
     bottom: 60px;
-    right: 20px;
+    right: 10px;
 }
 #playButton, #learnButton {
     bottom: 60px;
-    left: 20px;
+    left: 10px;
 }
 #learnButton {
     background-color: #1c9aed;
@@ -151,8 +177,8 @@ body.panorama-active {
 
 #loadpanel {
     position: absolute;
-    top: 40px;
-    left: 10px;
+    top: 5px;
+    left: 0px;
     display: flex;
     flex-direction: column;
     gap: 10px; /* Add space between the elements */
@@ -162,18 +188,20 @@ body.panorama-active {
     border-radius: 8px;
     /* box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); */
     z-index: 9999;
+   
 }
+
+
 
 .button {
     background-color: #4CAF50;
     color: white;
-    padding: 10px 15px;
+    /* padding: 15px 20px; */
     text-align: center;
     text-decoration: none;
     display: inline-block;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
     margin-bottom: 5px;
 }
 
@@ -193,6 +221,7 @@ body.panorama-active {
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
+    width:40px;
 }
 
 #imageloaderSection{
