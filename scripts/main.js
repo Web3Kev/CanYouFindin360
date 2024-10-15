@@ -31,6 +31,7 @@ let editable=false;
 let urlImage="";
 let urlJson="";
 
+let gyroAllowed=false;
 
 let uploadedImage="";
 let uploadedJson="";
@@ -227,8 +228,8 @@ function init() {
     if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
         if(tts){readMessage("gyro asked",true,true);}
         document.body.addEventListener('click', requestOrientationPermission, { once: true });
-        //show reset orientation button
-        resetGyro.style.display="flex";
+        // //show reset orientation button
+        // resetGyro.style.display="flex";
     }else
     {
         if(tts){readMessage("speech ready",true,true);}
@@ -428,6 +429,7 @@ function requestOrientationPermission() {
         .then(response => {
             if (response === 'granted') {
                 window.addEventListener('deviceorientation', onDeviceOrientation, false);
+                gyroAllowed=true;
             }
         })
         .catch(console.error);
@@ -835,6 +837,10 @@ function startLearn()
 
 // Add a function to reset the initial orientation
 function resetInitialOrientation() {
+    if(!gyroAllowed)
+    {
+        requestOrientationPermission();
+    }
     hasInitialOrientation = false;
 }
 
@@ -1005,15 +1011,18 @@ saveButton.addEventListener('click', function() {
 
 init();
 
-// if(isMobileDevice())
-// {
-//     //disable on mobile
+if(isMobileDevice())
+{
+    //disable on mobile
     loadPanel.style.display="none";
-// }
-// else
-// {
-//     loadPanel.style.display="flex";
-// }
+    //show reset orientation button
+    resetGyro.style.display="flex";
+}
+else
+{
+    loadPanel.style.display="flex";
+    resetGyro.style.display="none";
+}
 
 
 
