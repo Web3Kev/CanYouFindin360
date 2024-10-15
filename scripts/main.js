@@ -122,19 +122,11 @@ function readUrlParams() {
         urlImage = params.get('image');
     }
 
-    if (params.has('edit')) {
-        debugElement.style.display="flex";
-        editToggle.style.display="block";
-        editable=true;
-    }
-    else
-    {
-        debugElement.style.display="none";
-        editToggle.style.display="none";
-        editable=false;
-    }
 
+    editToggle.style.display=params.has('edit')?"block":"none";
+    editable=params.has('edit');
     
+    debugElement.style.display=params.has('debug')?"flex":"none";
 
     setEditMode(params.get('edit') === 'true')
 

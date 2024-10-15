@@ -20,7 +20,7 @@ body, html {
     position: absolute;
     top: 20px; 
     left: 50%;
-    width:fit-content;
+    width:100%;
     transform: translateX(-50%);
     text-align: center;
     font-size: 30px; 
@@ -43,7 +43,7 @@ body.panorama-active {
     justify-content: flex-start;
     align-items: center;
     padding: 20px;
-    padding-top: 80px;
+    padding-top: 100px;
     box-sizing: border-box;
 }
 #cardGrid {
@@ -295,7 +295,7 @@ body.panorama-active {
     border-radius: 5px;
     cursor: pointer;
     display:none;
-    width:40px;
+    width:100px;
   }
 
 
