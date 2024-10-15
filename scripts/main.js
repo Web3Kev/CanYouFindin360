@@ -65,7 +65,7 @@ const resetGyro = document.getElementById('resetGyro');
 
 const imageLoader = document.getElementById('imageLoader');
 const jsonLoader = document.getElementById('jsonLoader');
-const loadPanel = document.getElementById('loadpanel');
+const loadPanel = document.getElementById('loaders');
 
 const editButton = document.getElementById('editButton');
 
@@ -1005,15 +1005,15 @@ saveButton.addEventListener('click', function() {
 
 init();
 
-if(isMobileDevice())
-{
-    //disable on mobile
+// if(isMobileDevice())
+// {
+//     //disable on mobile
     loadPanel.style.display="none";
-}
-else
-{
-    loadPanel.style.display="flex";
-}
+// }
+// else
+// {
+//     loadPanel.style.display="flex";
+// }
 
 
 

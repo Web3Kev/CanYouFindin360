@@ -32,18 +32,23 @@
     <button id="learnButton">Learn</button>
     <button id="closeButton">Close</button>
     
+
     <div id="loadpanel">
-      <div id="imageloaderSection">
-        <label for="imageLoader" class="button">Add Image</label>
-        <input type="file" id="imageLoader" accept="image/*">
+      <div id="loaders">
+        <div id="imageloaderSection">
+          <label for="imageLoader" class="button">Add Image</label>
+          <input type="file" id="imageLoader" accept="image/*">
+        </div>
+        <div id="jsonloaderSection">
+          <label for="jsonLoader" class="button">Add Hotspots</label>
+          <input type="file" id="jsonLoader" accept="application/json">
+        </div>
       </div>
-      <div id="jsonloaderSection">
-        <label for="jsonLoader" class="button">Add Hotspots</label>
-        <input type="file" id="jsonLoader" accept="application/json">
-      </div>
-      <button id="wireframeButton">Wireframe</button>
+        <button id="wireframeButton">Wireframe</button>
+      
       <button id="resetGyro">Reset Orientation</button>
     </div>
+
     <div id="editOverlay">
         <input type="text" id="hotspotName" placeholder="Hotspot Name">
         <input type="range" id="hotspotRadius" min="10" max="200" value="20">
