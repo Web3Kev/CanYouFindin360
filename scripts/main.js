@@ -125,7 +125,7 @@ function readUrlParams() {
 
     editToggle.style.display=params.has('edit')?"block":"none";
     editable=params.has('edit');
-    
+
     debugElement.style.display=params.has('debug')?"flex":"none";
 
     setEditMode(params.get('edit') === 'true')
@@ -734,12 +734,9 @@ function CheckForHotSpot()
             }
             else
             {
-                wordDisplay.textContent = hotspot.word;
+
+                ShowSubtitle(hotspot.word);
                 readMessage("this is ..... "+hotspot.word.toString(),true,true);
-                wordDisplay.style.display = 'block';
-                setTimeout(() => {
-                    wordDisplay.style.display = 'none';
-                }, 2000);
                 break;  // Exit the loop when the hotspot is found
             }
             
@@ -748,6 +745,15 @@ function CheckForHotSpot()
             wordDisplay.style.display = 'none';
         }
     }
+}
+
+function ShowSubtitle(text)
+{
+    wordDisplay.textContent = text;
+    wordDisplay.style.display = 'block';
+    setTimeout(() => {
+        wordDisplay.style.display = 'none';
+    }, 2000);
 }
 
 let gameStarted=false;
@@ -811,11 +817,13 @@ function getNextWord()
     {
         currentWordToFind=selectedWords.pop();
         readMessage("Can you find ... " + currentWordToFind,true,true);
+        ShowSubtitle(`Can you find  : ${currentWordToFind}`);
         //need to have it written too if no TTS
     }
     else
     {
         readMessage("Game Over !",true,true);
+        ShowSubtitle("Game Over !");
         stopPlay();
 
     }
