@@ -78,6 +78,8 @@ const editOverlay = document.getElementById('editOverlay');
 const wordDisplay = document.getElementById('wordDisplay');
 const debugElement = document.getElementById('debug');
 
+const successDiv = document.getElementById('success');
+
 let image = null;
 
 const tts = initTTS();
@@ -476,6 +478,18 @@ function loadHotspots(jsonPath) {
         });
 }
 
+function showAndAnimateSuccess() {
+  
+    successDiv.style.display = 'block';
+    
+    successDiv.style.animation = 'growAndShrink 1s ease-in-out infinite';
+    
+    setTimeout(() => {
+        successDiv.style.display = 'none';
+    }, 1000);
+}
+
+
 function editHotspot(index, tempCircle = null) {
     console.log("edit open");
     isAddingHotspot = true;
@@ -804,11 +818,12 @@ function checkIfCorrect(word)
 
 function Win()
 {
+    showAndAnimateSuccess();
     readMessage("correct !",true,true);
 
     setTimeout(() => {
         getNextWord();
-    }, 2000);
+    }, 1500);
 }
 
 function getNextWord()

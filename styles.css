@@ -15,6 +15,25 @@ body, html {
   user-select: none;           /* Prevent text selection for other browsers */
 }
 
+@keyframes growAndShrink {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.5); }
+}
+
+#success {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999; 
+    font-size: 100px; 
+    color: #fff; 
+    padding: 20px;
+    border-radius: 10px; 
+    text-align: center;
+    display: none;
+    /* animation: growAndShrink 2s ease-in-out infinite; */
+}
 
 #title {
     position: absolute;
