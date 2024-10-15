@@ -295,6 +295,7 @@ body.panorama-active {
     border-radius: 5px;
     cursor: pointer;
     display:none;
+    width:40px;
   }
 
 

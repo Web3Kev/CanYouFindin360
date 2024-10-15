@@ -405,6 +405,15 @@ function loadPanorama(panorama) {
     closeButton.style.display = 'block';
 
     if(editMode){showHotspots=editMode;}
+
+    if(isMobileDevice())
+    {
+        resetGyro.style.display="flex";
+    }
+    else
+    {
+        resetGyro.style.display="none";
+    }
 }
 
 
@@ -979,6 +988,8 @@ closeButton.addEventListener('click', function() {
     deleteButton.style.display = 'none';
     closeButton.style.display = 'none';
 
+    resetGyro.style.display="none";
+
     document.body.classList.remove('panorama-active');
 
     stopPlay();
@@ -1013,15 +1024,11 @@ init();
 
 if(isMobileDevice())
 {
-    //disable on mobile
     loadPanel.style.display="none";
-    //show reset orientation button
-    resetGyro.style.display="flex";
 }
 else
 {
     loadPanel.style.display="flex";
-    resetGyro.style.display="none";
 }
 
 
