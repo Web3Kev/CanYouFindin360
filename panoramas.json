@@ -3,13 +3,13 @@
       "title": "Bathroom",
       "previewUrl": "./assets/pictures/bathroom.jpg",
       "fullImageUrl": "./assets/pictures/bathroom.jpg",
-      "jsonUrl": "_assets_pictures_bathroom.json"
+      "jsonUrl": "bathroom.json"
     },
     {
       "title": "Kitchen",
       "previewUrl": "./assets/pictures/kitchen.jpg",
       "fullImageUrl": "./assets/pictures/kitchen.jpg",
-      "jsonUrl": "_assets_pictures_kitchen.json"
+      "jsonUrl": "kitchen.json"
     },
     {
       "title": "Custom",
